@@ -1,4 +1,4 @@
-FROM hysds/pge-base:python3
+FROM hysds/pge-base:latest
 
 ARG id
 ARG gid
