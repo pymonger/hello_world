@@ -1,0 +1,379 @@
+<?xml version="1.0"?>
+<sf:sciflo xmlns:sf="http://sciflo.jpl.nasa.gov/2006v1/sf"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:py="http://sciflo.jpl.nasa.gov/2006v1/py">
+
+  <sf:flow id="test_sciflo_2chains">
+
+    <sf:description>Test sciflo 2 chains.</sf:description>
+
+    <sf:inputs>
+      <arg1 type="xs:string">Hello</arg1>
+      <arg2 type="xs:string">World</arg2>
+      <queue1 type="xs:string">factotum-job_worker-large</queue1>
+      <queue2 type="xs:string">factotum-job_worker-small</queue2>
+    </sf:inputs>
+
+    <sf:outputs>
+      <res1>@#get_job1_result</res1>
+      <res2>@#get_job2_result</res2>
+      <res3>@#get_job3_result</res3>
+      <res4>@#get_job4_result</res4>
+      <res5>@#get_job5_result</res5>
+      <res6>@#get_job6_result</res6>
+      <res7>@#get_job7_result</res7>
+      <res8>@#get_job8_result</res8>
+      <res9>@#get_job9_result</res9>
+      <res10>@#get_job10_result</res10>
+      <res11>@#get_job11_result</res11>
+    </sf:outputs>
+
+    <sf:processes>
+
+      <sf:process id="job1">
+        <sf:inputs>
+          <arg1/>
+          <queue1/>
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding job_queue="jobs_processed" async="true">parallel:python:?test_sciflo_chain.create_job</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="get_job1_result">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding>python:?test_sciflo_chain.get_result</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="job2">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+          <queue1/>
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding job_queue="jobs_processed" async="true">parallel:python:?test_sciflo_chain.create_job</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="get_job2_result">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding>python:?test_sciflo_chain.get_result</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="job3">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+          <queue1/>
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding job_queue="jobs_processed" async="true">parallel:python:?test_sciflo_chain.create_job</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="get_job3_result">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding>python:?test_sciflo_chain.get_result</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="job4">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+          <queue1/>
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding job_queue="jobs_processed" async="true">parallel:python:?test_sciflo_chain.create_job</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="get_job4_result">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding>python:?test_sciflo_chain.get_result</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="job5">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+          <queue1/>
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding job_queue="jobs_processed" async="true">parallel:python:?test_sciflo_chain.create_job</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="get_job5_result">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding>python:?test_sciflo_chain.get_result</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="job6">
+        <sf:inputs>
+          <arg2/>
+          <queue2/>
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding job_queue="jobs_processed" async="true">parallel:python:?test_sciflo_chain.create_job</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="get_job6_result">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding>python:?test_sciflo_chain.get_result</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="job7">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+          <queue2/>
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding job_queue="jobs_processed" async="true">parallel:python:?test_sciflo_chain.create_job</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="get_job7_result">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding>python:?test_sciflo_chain.get_result</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="job8">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+          <queue2/>
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding job_queue="jobs_processed" async="true">parallel:python:?test_sciflo_chain.create_job</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="get_job8_result">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding>python:?test_sciflo_chain.get_result</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="job9">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+          <queue2/>
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding job_queue="jobs_processed" async="true">parallel:python:?test_sciflo_chain.create_job</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="get_job9_result">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding>python:?test_sciflo_chain.get_result</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="job10">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+          <queue2/>
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding job_queue="jobs_processed" async="true">parallel:python:?test_sciflo_chain.create_job</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="get_job10_result">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding>python:?test_sciflo_chain.get_result</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="job11">
+        <sf:inputs>
+          <arg1 from="@#get_job5_result.res" />
+          <arg2 from="@#previous.res" />
+          <queue1/>
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding job_queue="jobs_processed" async="true">parallel:python:?test_sciflo_chain.create_merge_job</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+      <sf:process id="get_job11_result">
+        <sf:inputs>
+          <arg from="@#previous.res" />
+        </sf:inputs>
+        <sf:outputs>
+          <res/>
+        </sf:outputs>
+        <sf:operator>
+          <sf:description></sf:description>
+          <sf:op>
+            <sf:binding>python:?test_sciflo_chain.get_result</sf:binding>
+          </sf:op>
+        </sf:operator>
+      </sf:process>
+
+    </sf:processes>
+
+  </sf:flow>
+
+</sf:sciflo>
