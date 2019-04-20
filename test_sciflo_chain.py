@@ -9,6 +9,20 @@ from hysds.utils import get_payload_hash
 from hysds_commons.job_utils import resolve_hysds_job
 
 
+# set logger and custom filter to handle being run from sciflo
+log_format = "[%(asctime)s: %(levelname)s/%(funcName)s] %(message)s"
+logging.basicConfig(format=log_format, level=logging.INFO)
+
+class LogFilter(logging.Filter):
+    def filter(self, record):
+        if not hasattr(record, 'id'): record.id = '--'
+        return True
+
+logger = logging.getLogger('test_sciflo_chain')
+logger.setLevel(logging.INFO)
+logger.addFilter(LogFilter())
+
+
 # backoff settings
 BACKOFF_MAX_VALUE = 64
 BACKOFF_MAX_TRIES = 10
@@ -27,10 +41,10 @@ def run_query(url, idx, query, doc_type=None):
     else:
         query_url = "{}/{}/{}/_search?search_type=scan&scroll=60&size=100".format(
             url, idx, doc_type)
-    logging.info("url: {}".format(url))
-    logging.info("idx: {}".format(idx))
-    logging.info("doc_type: {}".format(doc_type))
-    logging.info("query: {}".format(json.dumps(query, indent=2)))
+    logger.info("url: {}".format(url))
+    logger.info("idx: {}".format(idx))
+    logger.info("doc_type: {}".format(doc_type))
+    logger.info("query: {}".format(json.dumps(query, indent=2)))
     r = requests.post(query_url, data=json.dumps(query))
     r.raise_for_status()
     scan_result = r.json()
@@ -45,6 +59,31 @@ def run_query(url, idx, query, doc_type=None):
             break
         hits.extend(res['hits']['hits'])
     return hits
+
+
+@backoff.on_exception(backoff.expo,
+                      Exception,
+                      max_tries=BACKOFF_MAX_TRIES,
+                      max_value=BACKOFF_MAX_VALUE)
+def job_done(url, idx, task_id, doc_type=None):
+    """Return True when job has transitioned away from "job-started"."""
+
+    query_status = {
+        "query": {
+            "term": {
+                "task_id": task_id,
+            }
+        },
+        "fields": [ "status" ],
+    }
+    logger.info("query_status: {}".format(json.dumps(query_status, indent=2)))
+    res = run_query(url, idx, query_status)
+    logger.info("got res: {}".format(json.dumps(res, indent=2)))
+    status = res[0]['fields']['status'][0]
+    logger.info("got status: {}".format(json.dumps(status, indent=2)))
+    if status == 'job-started':
+        raise RuntimeError("Job with task ID {} still in 'job-started' state.".format(task_id))
+    return True
 
 
 def create_job(arg, job_queue, wuid=None, job_num=None):
@@ -67,7 +106,7 @@ def create_job(arg, job_queue, wuid=None, job_num=None):
     # add workflow info
     job['payload']['_sciflo_wuid'] = wuid
     job['payload']['_sciflo_job_num'] = job_num
-    logging.info("job: {}".format(json.dumps(job, indent=2)))
+    logger.info("job: {}".format(json.dumps(job, indent=2)))
 
     return job
 
@@ -92,31 +131,17 @@ def create_merge_job(arg1, arg2, job_queue, wuid=None, job_num=None):
     # add workflow info
     job['payload']['_sciflo_wuid'] = wuid
     job['payload']['_sciflo_job_num'] = job_num
-    logging.info("job: {}".format(json.dumps(job, indent=2)))
+    logger.info("job: {}".format(json.dumps(job, indent=2)))
 
     return job
 
 
 def get_result(result):
-    """Test function for processing a reduced job result."""
+    """Evaluator function for processing a job result."""
 
-    logging.info("got result: {}".format(json.dumps(result, indent=2)))
+    logger.info("got result: {}".format(json.dumps(result, indent=2)))
     task_id = result[0]
-    query_status = {
-        "query": {
-            "term": {
-                "task_id": task_id,
-            }
-        },
-        "fields": [ "status" ],
-    }
-    logging.info("query_status: {}".format(json.dumps(query_status, indent=2)))
-    status = 'job-started'
-    while  status == 'job-started':
-        res = run_query(app.conf['JOBS_ES_URL'], 'job_status-current', query_status)
-        logging.info("got res: {}".format(json.dumps(res, indent=2)))
-        status = res[0]['fields']['status'][0]
-        logging.info("got status: {}".format(json.dumps(status, indent=2)))
+    done = job_done(app.conf['JOBS_ES_URL'], 'job_status-current', task_id)
     query = {
         "query": {
             "term": {
@@ -125,7 +150,14 @@ def get_result(result):
         }
     }
     jobs = run_query(app.conf['JOBS_ES_URL'], 'job_status-current', query)
-    logging.info("got job: {}".format(json.dumps(jobs[0], indent=2)))
+    logger.info("got job: {}".format(json.dumps(jobs[0], indent=2)))
     dataset_id = jobs[0]['_source']['job']['job_info']['metrics']['products_staged'][0]['id']
-    print("got dataset_id: {}".format(dataset_id))
+    logger.info("got dataset_id: {}".format(dataset_id))
     return dataset_id
+
+
+def get_result_force_stoppage(result):
+    """Evaluator function for processing a job result. Force stoppage."""
+
+    dataset_id = get_result(result)
+    raise RuntimeError("Stopping workflow.")
