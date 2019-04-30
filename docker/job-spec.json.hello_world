@@ -1,5 +1,10 @@
 {
   "command": "/home/ops/verdi/ops/hello_world/run_hello_world.sh",
   "recommended-queues": [ "job_worker-small" ],
-  "params": []
+  "params": [
+    {
+      "name": "localize_url",
+      "destination": "localize"
+    }
+  ]
 }

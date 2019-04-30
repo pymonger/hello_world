@@ -1,4 +1,10 @@
 {
   "label": "Hello World",
-  "params": []
+  "params": [
+    { 
+      "name": "localize_url",
+      "from": "dataset_jpath:",
+      "lambda": "lambda met: get_best_url(met['_source']['urls'])"
+    }
+  ]
 }
