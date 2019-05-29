@@ -1,5 +1,15 @@
 {
   "command": "/home/ops/verdi/ops/hello_world/run_hello_world.sh",
   "recommended-queues": [ "job_worker-small" ],
+  "dependency_images": [
+    {
+      "container_image_name": "container-hysds-org_dumby:v2.10-gmanipon",
+      "container_image_url": "$CODE_BUCKET_URL/container-hysds-org_dumby:v2.10-gmanipon.tar.gz",
+      "container_mappings": {
+        "$HOME/.netrc": ["/root/.netrc"],
+        "$HOME/.aws": ["/root/.aws", "ro"]
+      }
+    }
+  ],
   "params": []
 }
